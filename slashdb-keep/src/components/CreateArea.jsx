@@ -22,13 +22,13 @@ function CreateArea(props) {
         <input
           onChange={handleChange}
           name="title"
-          placeholder="Title"
+          placeholder="Task"
           value={note.title}
         />
         <textarea
           onChange={handleChange}
           name="content"
-          placeholder="Take a note..."
+          placeholder="Task description..."
           rows="3"
           value={note.content}
         />

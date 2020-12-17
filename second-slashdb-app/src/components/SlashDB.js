@@ -78,7 +78,7 @@ export default function SlashDB(props) {
           Select base database
         </button>
       </div>
-      <div calssName="sectionWrapper">
+      <div className="sectionWrapper">
         <h2>Level one data sets</h2>
         {levelOne.hasOwnProperty(addon) &&
           levelOneOptions.map(

@@ -56,7 +56,7 @@ footer p {
 }
 
 .note button {
-  border-radius: 50%;
+  border-radius: 7px;
   position: relative;
   float: right;
   margin-right: 10px;
@@ -96,6 +96,94 @@ form button {
   border: none;
   border-radius: 50%;
   width: 36px;
+  height: 36px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  outline: none;
+}
+
+.listsArea {
+  margin: 1rem auto auto;
+  padding: 0.5rem;
+  width: 70%;
+  min-height: 80px;
+}
+
+.listsArea h3 {
+  display: block;
+  float: left;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: 0.5rem;
+  padding: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.lists {
+  display: block;
+  float: left;
+  justify-content: center;
+  align-items: center;
+  margin: 0.5rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+  color: #00afef;
+  background: #fff;
+  border: none;
+  border-radius: 7px;
+  box-shadow: 0 2px 5px #ccc;
+  cursor: pointer;
+}
+
+.listAdd {
+  display: block;
+  float: right;
+  justify-content: center;
+  align-items: center;
+  margin: 0.5rem;
+  padding: 0.5rem;
+  background: #00afef;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  outline: none;
+}
+
+.listDelete {
+  display: block;
+  float: right;
+  justify-content: center;
+  align-items: center;
+  margin: 0.5rem;
+  padding: 0.5rem;
+  background: #e2200e;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  outline: none;
+}
+
+.listName {
+  display: block;
+  float: right;
+  justify-content: center;
+  align-items: center;
+  margin: 0.5rem;
+  padding: 0.5rem;
+  background: #fff;
+  color: rgb(46, 42, 42);
+  border: none;
+  border-radius: 7px;
+  width: auto;
   height: 36px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   cursor: pointer;
