@@ -1,58 +1,74 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Fragment } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Note from './components/Note';
 import CreateArea from './components/CreateArea';
-// import List from './components/List';
+import List from './components/List';
 
 export default function App() {
   const [lists, setLists] = useState([]);
   const [notes, setNotes] = useState([]);
+
   const [currentList, setCurrentList] = useState('');
-  const [newList, setNewList] = useState('');
-  const [requestData, setRequestData] = useState(new Date());
+  const [newListName, setNewListName] = useState('');
+
+  const baseUrl = `http://localhost:8000/db/datadb`;
+  const jsonEnd = `.json?href=false`;
+
+  const taskList = `/TaskList`;
+
+  const taskItem = `/TaskItem`;
+
+  const TaskListId = `/TaskListId`;
+
+  const TaskItemId = `/TaskItemId`;
 
   useEffect(() => {
-    const url = `http://localhost:8000/db/datadb/TaskList.json?href=false`;
-    fetch(url)
-      .then((response) => response.json())
-      .then((json) => setLists(json));
-  }, [requestData]);
-
-  const getList = useCallback((ID) => {
-    const url = `http://localhost:8000/db/datadb/TaskItem/TaskListId/${ID}.json?href=false`;
-    fetch(url)
-      .then((response) => response.json())
-      .then((json) => setNotes(json));
+    getLists();
   }, []);
 
-  function addList(name) {
-    const url = 'http://localhost:8000/db/datadb/TaskList.json';
-    fetch(url, {
+  async function getLists() {
+    const url = baseUrl + taskList + jsonEnd;
+    await fetch(url)
+      .then((response) => response.json())
+      .then((json) => setLists(json));
+  }
+
+  async function getListNotes(ID) {
+    const url = baseUrl + taskItem + TaskListId + `/${ID}` + jsonEnd;
+    await fetch(url)
+      .then((response) => response.json())
+      .then((json) => setNotes(json));
+  }
+
+  async function addList(name) {
+    const url = baseUrl + taskList + jsonEnd;
+    await fetch(url, {
       method: 'POST',
       header: { 'Content-Type': 'text/plain;charset=UTF-8' },
       body: JSON.stringify({
         Name: name,
       }),
     }).then(() => {
-      setRequestData(new Date());
+      getLists();
+      getListNotes(lists[lists.length - 1].TaskListId);
     });
   }
 
-  function deleteList() {
-    console.log('currentList' + currentList);
-    const url = `http://localhost:8000/db/datadb/TaskList/TaskListId/${currentList}.json`;
-    fetch(url, {
+  async function deleteList() {
+    const url = baseUrl + taskList + TaskListId + `/${currentList}` + jsonEnd;
+    await fetch(url, {
       method: 'DELETE',
       header: { 'Content-Type': 'text/plain;charset=UTF-8' },
     }).then(() => {
-      setRequestData(new Date());
+      getLists();
+      getListNotes(lists[lists.length - 2].TaskListId);
     });
   }
 
-  function addNote(newNote) {
-    const url = 'http://localhost:8000/db/datadb/TaskItem.json';
-    fetch(url, {
+  async function addNote(newNote) {
+    const url = baseUrl + taskItem + jsonEnd;
+    await fetch(url, {
       method: 'POST',
       header: { 'Content-Type': 'text/plain;charset=UTF-8' },
       body: JSON.stringify({
@@ -61,64 +77,108 @@ export default function App() {
         TaskListId: currentList,
       }),
     }).then(() => {
-      getList(currentList);
+      getListNotes(currentList);
     });
   }
 
-  function deleteNote(id) {
-    const url = `http://localhost:8000/db/datadb/TaskItem/TaskItemId/${id}.json`;
-    fetch(url, {
+  async function deleteNote(id) {
+    const url = baseUrl + `/TaskItem/TaskItemId/${id}.json`;
+    await fetch(url, {
       method: 'DELETE',
       header: { 'Content-Type': 'text/plain;charset=UTF-8' },
     }).then(() => {
-      getList(currentList);
+      getListNotes(currentList);
+    });
+  }
+
+  async function deleteAllNotes() {
+    const url = baseUrl + `/TaskItem/TaskListId/${currentList}` + jsonEnd;
+    await fetch(url, {
+      method: 'DELETE',
+      header: { 'Content-Type': 'text/plain;charset=UTF-8' },
+    }).then(() => {
+      deleteList();
+    });
+  }
+
+  async function putNote(note) {
+    const url =
+      baseUrl + taskItem + TaskItemId + `/` + note.TaskItemId + jsonEnd;
+    await fetch(url, {
+      method: 'PUT',
+      header: { 'Content-Type': 'text/plain;charset=UTF-8' },
+      body: JSON.stringify({
+        Note: note.Note,
+        Title: note.Title,
+      }),
+    }).then(() => {
+      getListNotes(currentList);
+    });
+  }
+
+  async function putList(list) {
+    const url =
+      baseUrl + taskList + TaskListId + `/` + list.TaskListId + jsonEnd;
+    await fetch(url, {
+      method: 'PUT',
+      header: { 'Content-Type': 'text/plain;charset=UTF-8' },
+      body: JSON.stringify({
+        Name: list.Name,
+      }),
+    }).then(() => {
+      getLists();
     });
   }
   return (
     <div>
       <Header />
       <div className="listsArea">
-        <h3>Lists: </h3>
-        {lists.map((list, index) => (
+        <div>
+          <h3>Lists: </h3>
+          {lists.map((list, index) => (
+            <List
+              key={list.TaskListId}
+              list={list}
+              getList={getListNotes}
+              setCurrentList={setCurrentList}
+              putList={putList}
+            />
+          ))}
+        </div>
+        <div>
+          {' '}
           <button
-            key={list.TaskListId}
-            className="lists"
-            onClick={(e) => {
-              getList(list.TaskListId);
-              setCurrentList(list.TaskListId);
+            className="listDelete"
+            onClick={() => {
+              deleteAllNotes();
             }}
           >
-            {list.Name}
+            -
           </button>
-        ))}
-
-        <button className="listDelete" onClick={deleteList}>
-          -
-        </button>
-        <button
-          className="listAdd"
-          onClick={() => {
-            addList(newList);
-            setNewList('');
-          }}
-        >
-          +
-        </button>
-        <input
-          placeholder="New list name..."
-          className="listName"
-          value={newList}
-          onChange={(e) => setNewList(e.target.value)}
-        />
+          <button
+            className="listAdd"
+            onClick={() => {
+              addList(newListName);
+              setNewListName('');
+            }}
+          >
+            +
+          </button>
+          <input
+            placeholder="New list name..."
+            className="listName"
+            value={newListName}
+            onChange={(e) => setNewListName(e.target.value)}
+          />
+        </div>
       </div>
       <CreateArea addNote={addNote} />
-      {notes.map((note, index) => (
+      {notes.map((note) => (
         <Note
-          key={index}
-          id={note.TaskItemId}
-          title={note.Title}
-          content={note.Note}
+          note={note}
+          key={note.TaskItemId}
           deleteNote={deleteNote}
+          putNote={putNote}
         />
       ))}
       <Footer />

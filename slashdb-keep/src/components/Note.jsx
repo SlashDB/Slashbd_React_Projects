@@ -1,13 +1,31 @@
 import React from 'react';
 
-function Note(props) {
+function Note(prop) {
   return (
     <div className="note">
-      <h1>{props.title}</h1>
-      <p>{props.content}</p>
+      <h1>
+        <input
+          type="text"
+          name="name"
+          value={prop.note.Title}
+          onChange={(e) => {
+            prop.note.Title = e.target.value;
+            prop.putNote(prop.note);
+          }}
+        />
+      </h1>
+      <textarea
+        name="task"
+        rows="5"
+        value={prop.note.Note}
+        onChange={(e) => {
+          prop.note.Note = e.target.value;
+          prop.putNote(prop.note);
+        }}
+      />
       <button
         onClick={() => {
-          props.deleteNote(props.id);
+          prop.deleteNote(prop.note.TaskItemId);
         }}
       >
         DELETE
