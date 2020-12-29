@@ -4,14 +4,18 @@
   box-sizing: border-box;
 }
 html {
+  height: 100%;
   font-family: 'Montserrat', sans-serif;
 }
 body {
+  height: 100%;
+  width: 100vw;
   background: #eee;
   padding: 0 16px;
 }
 
 header {
+  width: 100vw;
   background-color: #00afef;
   margin: auto -16px;
   padding: 16px 32px;
@@ -24,17 +28,6 @@ header h1 {
   font-weight: 200;
 }
 
-footer {
-  position: absolute;
-  text-align: center;
-  bottom: 0;
-  width: 100%;
-  height: 2.5rem;
-}
-
-footer p {
-  color: #ccc;
-}
 .note {
   background: #fff;
   border-radius: 7px;
@@ -44,11 +37,7 @@ footer p {
   margin: 16px;
   float: left;
 }
-.note h1 {
-  font-size: 1.1em;
-  margin-bottom: 6px;
-}
-
+.note h1,
 .note input {
   font-size: 1em;
   margin-bottom: 6px;
@@ -59,7 +48,7 @@ footer p {
   width: 100%;
   overflow: visible;
   font-family: inherit;
-  font-size: 1.1em;
+  font-size: 1em;
   margin-bottom: 10px;
   border: none;
   resize: vertical;
@@ -92,7 +81,7 @@ form input,
 form textarea {
   width: 100%;
   border: none;
-  padding: 4px;
+  padding: 1rem;
   outline: none;
   font-size: 1.2em;
   font-family: inherit;
@@ -101,23 +90,15 @@ form textarea {
 form button {
   position: absolute;
   right: 18px;
-  bottom: -18px;
-  background: #00afef;
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  cursor: pointer;
-  outline: none;
+  bottom: -25px;
 }
 
 .listsArea {
   margin: 1rem auto auto;
   padding: 0.5rem;
-  width: 70%;
+  width: 65%;
   min-height: 80px;
+  height: 100%;
 }
 
 .listsArea h3 {
@@ -132,15 +113,13 @@ form button {
 }
 
 .lists {
-  display: block;
-  float: left;
+  display: inline;
   justify-content: center;
   align-items: center;
   width: 200px;
   margin: 0.5rem;
   padding: 0.5rem;
   font-size: 1rem;
-  color: #00afef;
   background: #fff;
   border: none;
   border-radius: 7px;
@@ -149,17 +128,13 @@ form button {
 }
 
 .lists input {
-  font-size: 1em;
+  font-size: 1rem;
   border: none;
   outline: none;
+  cursor: pointer;
   width: 100%;
 }
-
-.listAdd {
-  display: block;
-  float: right;
-  justify-content: center;
-  align-items: center;
+.button {
   margin: 0.5rem;
   padding: 0.5rem;
   background: #00afef;
@@ -172,39 +147,12 @@ form button {
   cursor: pointer;
   outline: none;
 }
-
 .listDelete {
-  display: block;
-  float: right;
-  justify-content: center;
-  align-items: center;
-  margin: 0.5rem;
-  padding: 0.5rem;
   background: #e2200e;
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  cursor: pointer;
-  outline: none;
 }
 
-.listName {
-  display: block;
-  float: right;
-  justify-content: center;
-  align-items: center;
-  margin: 0.5rem;
-  padding: 0.5rem;
-  background: #fff;
-  color: rgb(46, 42, 42);
-  border: none;
-  border-radius: 7px;
-  width: auto;
-  height: 36px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  cursor: pointer;
-  outline: none;
+.newListBlock {
+  position: relative;
+  width: 320px;
+  margin: 30px auto 20px auto;
 }

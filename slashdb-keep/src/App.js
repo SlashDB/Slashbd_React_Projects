@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, Fragment } from 'react';
 import Header from './components/Header';
-import Footer from './components/Footer';
 import Note from './components/Note';
 import CreateArea from './components/CreateArea';
 import List from './components/List';
@@ -25,7 +24,7 @@ export default function App() {
 
   useEffect(() => {
     getLists();
-  }, []);
+  }, [lists]);
 
   async function getLists() {
     const url = baseUrl + taskList + jsonEnd;
@@ -33,14 +32,12 @@ export default function App() {
       .then((response) => response.json())
       .then((json) => setLists(json));
   }
-
   async function getListNotes(ID) {
     const url = baseUrl + taskItem + TaskListId + `/${ID}` + jsonEnd;
     await fetch(url)
       .then((response) => response.json())
       .then((json) => setNotes(json));
   }
-
   async function addList(name) {
     const url = baseUrl + taskList + jsonEnd;
     await fetch(url, {
@@ -51,10 +48,8 @@ export default function App() {
       }),
     }).then(() => {
       getLists();
-      getListNotes(lists[lists.length - 1].TaskListId);
     });
   }
-
   async function deleteList() {
     const url = baseUrl + taskList + TaskListId + `/${currentList}` + jsonEnd;
     await fetch(url, {
@@ -62,10 +57,9 @@ export default function App() {
       header: { 'Content-Type': 'text/plain;charset=UTF-8' },
     }).then(() => {
       getLists();
-      getListNotes(lists[lists.length - 2].TaskListId);
+      setNotes([]);
     });
   }
-
   async function addNote(newNote) {
     const url = baseUrl + taskItem + jsonEnd;
     await fetch(url, {
@@ -80,7 +74,6 @@ export default function App() {
       getListNotes(currentList);
     });
   }
-
   async function deleteNote(id) {
     const url = baseUrl + `/TaskItem/TaskItemId/${id}.json`;
     await fetch(url, {
@@ -90,7 +83,6 @@ export default function App() {
       getListNotes(currentList);
     });
   }
-
   async function deleteAllNotes() {
     const url = baseUrl + `/TaskItem/TaskListId/${currentList}` + jsonEnd;
     await fetch(url, {
@@ -100,7 +92,6 @@ export default function App() {
       deleteList();
     });
   }
-
   async function putNote(note) {
     const url =
       baseUrl + taskItem + TaskItemId + `/` + note.TaskItemId + jsonEnd;
@@ -115,7 +106,6 @@ export default function App() {
       getListNotes(currentList);
     });
   }
-
   async function putList(list) {
     const url =
       baseUrl + taskList + TaskListId + `/` + list.TaskListId + jsonEnd;
@@ -131,32 +121,17 @@ export default function App() {
   }
   return (
     <div>
-      <Header />
-      <div className="listsArea">
-        <div>
-          <h3>Lists: </h3>
-          {lists.map((list, index) => (
-            <List
-              key={list.TaskListId}
-              list={list}
-              getList={getListNotes}
-              setCurrentList={setCurrentList}
-              putList={putList}
-            />
-          ))}
-        </div>
-        <div>
-          {' '}
+      <div className="content ">
+        <Header />
+        <div className="newListBlock">
+          <input
+            placeholder="New note list name..."
+            className="lists"
+            value={newListName}
+            onChange={(e) => setNewListName(e.target.value)}
+          />
           <button
-            className="listDelete"
-            onClick={() => {
-              deleteAllNotes();
-            }}
-          >
-            -
-          </button>
-          <button
-            className="listAdd"
+            className="button"
             onClick={() => {
               addList(newListName);
               setNewListName('');
@@ -164,24 +139,40 @@ export default function App() {
           >
             +
           </button>
-          <input
-            placeholder="New list name..."
-            className="listName"
-            value={newListName}
-            onChange={(e) => setNewListName(e.target.value)}
-          />
+          <button
+            className="button listDelete"
+            onClick={() => {
+              deleteAllNotes();
+            }}
+          >
+            -
+          </button>
         </div>
+
+        <div className="listsArea">
+          <h3>Lists: </h3>
+          <div className="listsDisplay">
+            {lists.map((list, index) => (
+              <List
+                key={list.TaskListId}
+                list={list}
+                getList={getListNotes}
+                setCurrentList={setCurrentList}
+                putList={putList}
+              />
+            ))}
+          </div>
+        </div>
+        <CreateArea addNote={addNote} />
+        {notes.map((note) => (
+          <Note
+            note={note}
+            key={note.TaskItemId}
+            deleteNote={deleteNote}
+            putNote={putNote}
+          />
+        ))}
       </div>
-      <CreateArea addNote={addNote} />
-      {notes.map((note) => (
-        <Note
-          note={note}
-          key={note.TaskItemId}
-          deleteNote={deleteNote}
-          putNote={putNote}
-        />
-      ))}
-      <Footer />
     </div>
   );
 }
