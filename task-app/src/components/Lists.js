@@ -14,7 +14,7 @@ function Lists(props) {
   return (
     <div style={wrapper}>
       {lists.map((list) => (
-        <List list={list} getLists={getLists} />
+        <List key={list.TaskListId} list={list} getLists={getLists} />
       ))}
     </div>
   );

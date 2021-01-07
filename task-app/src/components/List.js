@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Name from './Name';
 import Task from './Task';
 import { fetchWrapper } from './../slashDBwrapper';
@@ -8,36 +8,49 @@ const List = (props) => {
   const [tasks, setTasks] = useState([]);
   const [task, setTask] = useState('');
 
-  function getTasks() {
-    return fetchWrapper
-      .get(`/TaskItem/TaskListId/${list.TaskListId}.json?href=false`)
-      .then((data) => setTasks(data));
+  const getTasks = useCallback(async () => {
+    const data = await fetchWrapper.get(
+      `/TaskItem/TaskListId/${list.TaskListId}`
+    );
+    return setTasks(data);
+  }, [list.TaskListId]);
+
+  async function postTask(body) {
+    await fetchWrapper.post(`/TaskItem`, body);
+    return await getTasks();
   }
 
-  function postTask(body) {
-    return fetchWrapper.post(`/TaskItem.json`, body).then(() => getTasks());
-  }
-
-  function deleteListTasks() {
-    fetchWrapper.delete(`/TaskItem/TaskListId/${list.TaskListId}.json`);
+  async function deleteListTasks() {
+    try {
+      list.TaskListId &&
+        (await fetchWrapper.delete(
+          `/TaskItem/TaskListId/${list.TaskListId}`
+        ));
+    } catch (error) {
+      console.log(error.message);
+    }
     deleteList();
   }
 
-  function updateList(body) {
-    return fetchWrapper
-      .put(`/TaskList/TaskListId/${list.TaskListId}.json`, body)
-      .then(() => getLists());
+  async function updateList(body) {
+    await fetchWrapper.put(
+      `/TaskList/TaskListId/${list.TaskListId}`,
+      body
+    );
+    return getLists();
   }
 
-  function deleteList() {
-    return fetchWrapper
-      .delete(`/TaskList/TaskListId/${list.TaskListId}.json`)
-      .then(() => getLists());
+  async function deleteList() {
+    await fetchWrapper.delete(`/TaskList/TaskListId/${list.TaskListId}`);
+    return getLists();
   }
 
   useEffect(() => {
     getTasks();
-  }, []);
+    return () => {
+      //for functionality on unmonth
+    };
+  }, [getTasks]);
 
   const listWrapper = {
     width: '240px',
@@ -57,8 +70,8 @@ const List = (props) => {
 
   const taskItemStyle = {
     color: 'white',
-    padding: '7px',
-    margin: '7px',
+    padding: '7.5px',
+    margin: '10px',
   };
 
   const inputStyle = {
@@ -73,6 +86,7 @@ const List = (props) => {
   const addButtonStyle = {
     float: 'right',
     border: 'none',
+    outline: 'none',
     lineHeight: '160%',
     backgroundColor: '#eeeeee',
     color: 'rgb(0,175,239)',
@@ -83,6 +97,7 @@ const List = (props) => {
 
   const removeButtonStyle = {
     display: 'inline',
+    outline: 'none',
     float: 'right',
     textAlign: 'center',
     verticalAlign: 'middle',
@@ -116,7 +131,7 @@ const List = (props) => {
       </div>
 
       {tasks.map((task) => (
-        <Task task={task} getTasks={getTasks} />
+        <Task key={task.TaskItemId} task={task} getTasks={getTasks} />
       ))}
       <div style={taskItemStyle}>
         <input
