@@ -1,26 +1,6 @@
-//Will need this later whe nwe turn the functions in to useGet, usePost.... hooks
-// import React, { createContext, useContext, useState, useCallback } from 'react';
-// export const SlashDBContext = createContext({});
-
-// export const SlashDBProvider = ({ baseUrl, children }) => (
-//   <SlashDBContext.Provider value={{ baseUrl }}>
-//     {children}
-//   </SlashDBContext.Provider>
-// );
-
-// const { baseUrl } = useContext(SlashDBContext);
-
 import { useState, useEffect, createContext, useContext } from 'react';
 
-export const SlashDBContext = createContext({});
-
-export const SlashDBProvider = ({ baseUrl, children }) => (
-  <SlashDBContext.Provider value={{ baseUrl }}>
-    {children}
-  </SlashDBContext.Provider>
-);
-
-export const fetchWrapper = {
+export const slashdb = {
   setUp,
   get,
   post,
@@ -31,12 +11,10 @@ export const fetchWrapper = {
 };
 
 let basePath = '';
-let dataBase = '';
 let dataFormat = `.json`;
 
-function setUp(basepath, database, dataformat) {
+function setUp(basepath, dataformat) {
   basePath = basepath;
-  dataBase = database;
   dataformat && (dataFormat = `.${dataformat}`);
 }
 
@@ -48,7 +26,7 @@ async function raw(httpMethod, url, body) {
   };
   try {
     return await fetch(
-      basePath + dataBase + url + dataFormat,
+      basePath  + url + dataFormat,
       requestOptions
     ).then(handleResponse);
   } catch (error) {
@@ -57,7 +35,7 @@ async function raw(httpMethod, url, body) {
 }
 
 async function get(url) {
-  //path, querryString - object, 
+  //path, querryString - object,
   return await raw('GET', url);
 }
 
@@ -116,11 +94,19 @@ async function query(fields, fct, body) {
       return await get(url);
   }
 }
-
+export const SlashDBContext = createContext({});
+export const SlashDBProvider = ({ baseUrl, children }) => (
+  <SlashDBContext.Provider value={{ baseUrl }}>
+    {children}
+  </SlashDBContext.Provider>
+);
 export function useQuery(fields, fct, body) {
   const { baseUrl } = useContext(SlashDBContext);
+
   console.log(baseUrl);
+
   const [data, setData] = useState([]);
+
   let url = '';
 
   fields.map((field) => {
@@ -147,5 +133,6 @@ export function useQuery(fields, fct, body) {
         break;
     }
   }, []);
+
   return data;
 }

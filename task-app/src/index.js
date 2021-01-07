@@ -2,12 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import { SlashDBProvider } from './Work_In_Progress/useSlashDB';
+import { SlashDBProvider } from './slashDBwrapper';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <SlashDBProvider baseUrl="http://localhost:8000/db/taskdatadb/">
+    <SlashDBProvider baseUrl="http://localhost:8000/db">
       <App />
     </SlashDBProvider>
   </React.StrictMode>,

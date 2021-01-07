@@ -7,19 +7,19 @@ const Task = (props) => {
 
   function updateTask(body) {
     return fetchWrapper
-      .put(`/TaskItem/TaskItemId/${task.TaskItemId}.json`, body)
+      .put(`/TaskItem/TaskItemId/${task.TaskItemId}`, body)
       .then(() => getTasks());
   }
 
   function deleteTask() {
     return fetchWrapper
-      .delete(`/TaskItem/TaskItemId/${task.TaskItemId}.json`)
+      .delete(`/TaskItem/TaskItemId/${task.TaskItemId}`)
       .then(() => getTasks());
   }
 
   const taskItemStyle = {
-    flexDirection: 'row',
-    padding: '5px',
+    listStyleType: 'none',
+    padding: '7.5px',
     color: 'white',
     margin: '10px',
     overflowWrap: 'break-word',
@@ -33,6 +33,7 @@ const Task = (props) => {
     verticalAlign: 'middle',
     margin: 'auto',
     lineHeight: '130%',
+    outline: 'none',
     border: 'none',
     color: '#d10000',
     borderRadius: '10px',
@@ -53,6 +54,8 @@ const Task = (props) => {
         style={{
           textDecoration: task.Checked ? 'line-through' : 'none',
           fontSize: '1rem',
+          height: 'auto',
+          margin: 'auto',
         }}
         fieldName="Task"
         fieldValue={task.Task}

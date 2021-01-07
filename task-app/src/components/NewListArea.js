@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { fetchWrapper } from './../slashDBwrapper';
+import { useQuery } from './../slashDBwrapper';
 
 export default function NewListArea(props) {
   const { getLists } = props;
   const [listName, setListName] = useState('');
 
   function postList(body) {
-    return fetchWrapper
-      .post(`/TaskList.json`, body)
-      .then(() => getLists());
+    return fetchWrapper.post(`/TaskList`, body).then(() => getLists());
   }
 
   const wrapper = {
